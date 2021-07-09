@@ -1,0 +1,15 @@
+version: "3"
+services:
+  db:
+    image: "postgres:12"
+    container_name: "fullstackdb"
+    environment:
+      POSTGRES_USER: fullstack
+      POSTGRES_DB: fullstack
+      POSTGRES_PASSWORD: password1
+    ports:
+      - 5432:5432
+    volumes:
+      - my_dbdata:/var/lib/postgresql/data
+volumes:
+  my_dbdata:
