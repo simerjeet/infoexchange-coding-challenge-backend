@@ -30,44 +30,17 @@ class AuthorListAPI(viewsets.ReadOnlyModelViewSet):
 
 
 # * **GET /books/** - Returns a list of books in the database in JSON format
-class BooksNameAPI(viewsets.ReadOnlyModelViewSet):
+class BooksNameListAPI(viewsets.ReadOnlyModelViewSet):
     queryset = models.Book.objects.all()
     serializer_class = serializers.BookNameSerializer
     permission_classes = (permissions.AllowAny,)
 
 
-# * **POST /book/** - Creates a new book with the specified details - Expects a JSON body
-class BookAPI(APIView):
+# * **GET /book/{{id}}/** - Returns a detail view of the specified book id. Nest author details in JSON format
+# * **PUT /book/{{id}}** - Updates an existing book - Expects a JSON body
+
+class BookAPI(viewsets.ModelViewSet):
     queryset = models.Book.objects.all()
     serializer_class = serializers.BookSerializer
     permission_classes = (permissions.AllowAny,)
 
-    def post(self, request):
-        if request.data is not None:
-            try:
-                name = request.data['name']
-                isbn = request.data['isbn']
-                author_id = request.data['author']
-
-            except KeyError:
-                return Response({'message': 'missing required data '}, status.HTTP_400_BAD_REQUEST)
-
-        author = models.Author.objects.get(id=author_id)
-        book = models.Book.objects.create(name=name,
-                                          isbn=isbn,
-                                          author=author)
-        serialized_book = self.serializer_class(book)
-        return Response(serialized_book.data, status=status.HTTP_201_CREATED)
-
-
-# * **GET /book/{{id}}/** - Returns a detail view of the specified book id. Nest author details in JSON format
-class BookDetailsAPI(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Book.objects.all()
-    serializer_class = serializers.BookDetailsSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def get_queryset(self):
-        book_id = self.kwargs['book_id']
-        return self.queryset.filter(id=book_id)
-
-# * **PUT /book/{{id}}** - Updates an existing book - Expects a JSON body

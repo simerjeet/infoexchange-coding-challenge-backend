@@ -8,10 +8,9 @@ router = routers.DefaultRouter()
 
 router.register(r'author', views.AuthorAPI)
 router.register(r'authors', views.AuthorListAPI)
-router.register(r'book/(?P<book_id>[0-9a-f-]{36})', views.BookDetailsAPI)
-router.register(r'books', views.BooksNameAPI)
+router.register(r'book', views.BookAPI)
+router.register(r'books', views.BooksNameListAPI)
 
 urlpatterns = [
     url(r'', include(router.urls)),
-    url(r'^book/', views.BookAPI.as_view()),
 ]

@@ -10,11 +10,6 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name']
 
 
-class BookSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(read_only=True)
-    class Meta:
-        model = Book
-        fields = ['id', 'name', 'isbn', 'author']
 
 
 class BookNameSerializer(serializers.ModelSerializer):
@@ -23,16 +18,11 @@ class BookNameSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class BookDetailsSerializer(serializers.ModelSerializer):
-    author = serializers.SerializerMethodField('get_author')
-
-    def get_author(self, book):
-        print(f'book : {book}')
-        qs = Author.objects.filter(id=book.author.id)
-        serializer = AuthorSerializer(instance=qs, read_only=True, many=True)
-        return serializer.data
+class BookSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(read_only=True)
+    author_id = serializers.UUIDField(write_only=True)
 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'isbn', 'author']
+        fields = ['id', 'name', 'isbn', 'author', 'author_id']
 
